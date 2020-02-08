@@ -6,9 +6,10 @@ import Backdrop from '../Backdrop/Backdrop';
 class Modal extends Component {
 
     //OrderSummary shi zedmeti Check agar gaketetdeba!
+    //tu romelive gansxvavebulia marto mashin
     // es wrapperia da aq magito vqenit
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.show !== this.props.show;
+        return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
     }
 
     render() {
