@@ -4,6 +4,10 @@ import classes from './Burger.module.css'
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 
 const burger = (props) => {
+    //aq burgerbuilderidan propshi ar wamova history location da search
+    //tu gvinda withRouter unda gamoviyenot!!!
+    console.log(props);
+    
     //js objectia not react! aketebs key_ebis arrays
     let transformedIngredients = Object.keys(props.ingredients)
         .map(igKey => {

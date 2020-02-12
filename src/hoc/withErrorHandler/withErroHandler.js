@@ -8,44 +8,7 @@ const withErrorHandler = (WrappedComponent, axios) => {
         state = {
             error: null
         }
-        // es xdeba child componentebis chatvirtvamde
-        // componentWillMount() {
-        //     console.log('aq rodis shemodixar bliad');
-        //     axios.interceptors.request.use(req => {
-        //         this.setState({ 
-        //             error: null // prosta vasuptavebt
-        //         });
-        //         return req;
-        //     });
-
-        //     axios.interceptors.response.use(res => res, error => {
-        //         console.log('aaaaq?');
-        //         this.setState({
-        //             error: error
-        //         });
-        //         //return error;
-        //     });
-        // }
-
-        // constructor(props) {
-        //     super(props);
-        //     axios.interceptors.request.use(req => {
-        //         this.setState({ 
-        //             error: null // prosta vasuptavebt
-        //         });
-        //         return req;
-        //     });
-
-        //     axios.interceptors.response.use(res => res, error => {
-        //         console.log('aaaaq?');
-        //         this.setState({
-        //             error: error
-        //         });
-        //         //return error;
-        //     });
-
-        // }
-
+        
         reqInterceptor = axios.interceptors.request.use(
             req => {
                 console.log('an aaaaaaaaaaaaq');
