@@ -7,30 +7,22 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErroHandler';
-import * as actionTypes from '../../store/actions';
+//import * as actionTypes from '../../store/actions/actionTypes';
 import axios from '../../axios-orders';
+
+import * as actionCreators from '../../store/actions/index';
 
 
 class BurderBuilder extends Component {
     state = {
-        purchasing: false,  // es imena order ro gvinda
-        loading: false,
-        error: false
+        purchasing: false  // es imena order ro gvinda
     }
 
     componentDidMount() {
-        console.log(this.props);
+        //console.log(this.props);
         //https://react-burger-3fb36.firebaseio.com/ingredients.json
-        // axios.get('https://react-burger-3fb36.firebaseio.com/ingredients.json')
-        //     .then(res => {
-        //         this.setState({
-        //             ingredients: res.data
-        //         });
-        //     }).catch(err => {
-        //         this.setState({
-        //             error: true
-        //         });
-        //     });
+        this.props.initIngredients();
+        
     }
 
     updatePurchaseState(ingredients) {
@@ -56,7 +48,8 @@ class BurderBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        
+        this.props.onInitPurchase(); // aq gaxdeba purchased: false da checkput.js shi
+                                    // agar gadmova Home pagze       
         this.props.history.push('/checkout');
     }
 
@@ -64,7 +57,7 @@ class BurderBuilder extends Component {
 
         let orderSummary = null;
 
-        let burder = this.state.error ? <p>dagvendzra</p> : <Spinner />;
+        let burder = this.props.error ? <p>dagvendzra</p> : <Spinner />;
 
         if (this.props.ings) {
             burder = (
@@ -72,8 +65,8 @@ class BurderBuilder extends Component {
                     <Burger ingredients={this.props.ings} />
                     <BuildControls
                         controls={this.props.ings}
-                        ingredientAdded={this.props.ingredientAdded}
-                        ingredientRemoved={this.props.ingredientRemoved}
+                        ingredientAdded={this.props.onIngredientAdded}
+                        ingredientRemoved={this.props.onIngredientRemoved}
                         price={this.props.totalPrice}
                         purchasable={this.updatePurchaseState(this.props.ings)}
                         ordered={this.purchaseHandler} />
@@ -84,10 +77,7 @@ class BurderBuilder extends Component {
                 purchaseContinued={this.purchaseContinueHandler}
                 purchaseCancelled={this.purchaseCancelHandler}
                 ingredients={this.props.ings} />
-        }
-        if (this.state.loading) {
-            orderSummary = <Spinner />
-        }
+        }        
 
         return (
             <Aux>
@@ -102,19 +92,22 @@ class BurderBuilder extends Component {
             </Aux>
         );
     };
-}
+} 
 
 const mapStateToProps = (state) => {
     return {
-        ings: state.ingredients,
-        totalPrice: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        ingredientAdded: (ingName) => dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
-        ingredientRemoved: (ingName) => dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName }) //!!!
+        onIngredientAdded: (ingName) => dispatch(actionCreators.addIngredient(ingName)),
+        onIngredientRemoved: (ingName) => dispatch(actionCreators.removeIngredient(ingName)), //!!!
+        initIngredients: () => dispatch(actionCreators.initIngredients()),
+        onInitPurchase: () => dispatch(actionCreators.purchaseInit())
     }
 }
 
