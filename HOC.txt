@@ -1,0 +1,1 @@
+https://medium.com/front-end-weekly/higher-order-component-hoc-design-pattern-in-react-9a6ba4eec59d

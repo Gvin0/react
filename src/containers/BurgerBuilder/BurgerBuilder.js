@@ -22,7 +22,7 @@ class BurderBuilder extends Component {
         //console.log(this.props);
         //https://react-burger-3fb36.firebaseio.com/ingredients.json
         this.props.initIngredients();
-        
+
     }
 
     updatePurchaseState(ingredients) {
@@ -36,9 +36,15 @@ class BurderBuilder extends Component {
     }
 
     purchaseHandler = () => {
-        this.setState({
-            purchasing: true
-        });
+        if (this.props.isAuthenticated) {
+            this.setState({
+                purchasing: true
+            });
+        }
+        else {
+            this.props.onSetAuthRedirectPath('/checkout');
+            this.props.history.push('/auth');
+        }
     }
 
     purchaseCancelHandler = () => {
@@ -48,8 +54,8 @@ class BurderBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.props.onInitPurchase(); // aq gaxdeba purchased: false da checkput.js shi
-                                    // agar gadmova Home pagze       
+        this.props.onInitPurchase(); // aq gaxdeba purchased: false da checkout.js shi
+        // agar gadmova Home pagze       
         this.props.history.push('/checkout');
     }
 
@@ -57,10 +63,10 @@ class BurderBuilder extends Component {
 
         let orderSummary = null;
 
-        let burder = this.props.error ? <p>dagvendzra</p> : <Spinner />;
+        let burger = this.props.error ? <p>dagvendzra</p> : <Spinner />;
 
         if (this.props.ings) {
-            burder = (
+            burger = (
                 <Aux>
                     <Burger ingredients={this.props.ings} />
                     <BuildControls
@@ -69,6 +75,7 @@ class BurderBuilder extends Component {
                         ingredientRemoved={this.props.onIngredientRemoved}
                         price={this.props.totalPrice}
                         purchasable={this.updatePurchaseState(this.props.ings)}
+                        isAuth={this.props.isAuthenticated}
                         ordered={this.purchaseHandler} />
                 </Aux>
             );
@@ -77,7 +84,7 @@ class BurderBuilder extends Component {
                 purchaseContinued={this.purchaseContinueHandler}
                 purchaseCancelled={this.purchaseCancelHandler}
                 ingredients={this.props.ings} />
-        }        
+        }
 
         return (
             <Aux>
@@ -88,17 +95,18 @@ class BurderBuilder extends Component {
                 >
                     {orderSummary}
                 </Modal>
-                {burder}
+                {burger}
             </Aux>
         );
     };
-} 
+}
 
 const mapStateToProps = (state) => {
     return {
         ings: state.burgerBuilder.ingredients,
         totalPrice: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     }
 }
 
@@ -107,7 +115,8 @@ const mapDispatchToProps = (dispatch) => {
         onIngredientAdded: (ingName) => dispatch(actionCreators.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actionCreators.removeIngredient(ingName)), //!!!
         initIngredients: () => dispatch(actionCreators.initIngredients()),
-        onInitPurchase: () => dispatch(actionCreators.purchaseInit())
+        onInitPurchase: () => dispatch(actionCreators.purchaseInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actionCreators.setAuthRedirectPath(path))
     }
 }
 

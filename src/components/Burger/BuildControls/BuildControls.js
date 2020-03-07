@@ -16,11 +16,11 @@ const buildControls = (props) => {
         <div className={classes.BuildControls}>
             <p>Current Price: <strong>{props.price.toFixed(2)}</strong></p>
             {transformedIngredients}
-            <button 
-                className={classes.OrderButton} 
+            <button
+                className={classes.OrderButton}
                 disabled={!props.purchasable}
                 onClick={props.ordered}
-                >ORDER NOW</button>
+            >{props.isAuth ? 'ORDER NOW' : 'Please SignIn'}</button>
         </div>
     );
 };

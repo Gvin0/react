@@ -4,7 +4,8 @@ import { updateObject } from '../utility';
 const initialState = {
     ingredients: null,
     totalPrice: 5,
-    error: false
+    error: false,
+    building: false
 }
 
 const INGREDIENT_PRICE = {
@@ -21,7 +22,8 @@ const reducer = (state = initialState, action) => {
             const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
             const updatedState = {
                 ingredients: updatedIngredients,
-                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName]
+                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName],
+                building: true
             }
             return updateObject(state, updatedState);
 
@@ -34,7 +36,8 @@ const reducer = (state = initialState, action) => {
                     //ES6 is syntacia mag: cheese: 0 + 1 ese gadaawers
                     [action.ingredientName]: state.ingredients[action.ingredientName] - 1
                 },
-                totalPrice: state.totalPrice - INGREDIENT_PRICE[action.ingredientName]
+                totalPrice: state.totalPrice - INGREDIENT_PRICE[action.ingredientName],
+                building: true
             };
         case actionTypes.SET_INGREDIENTS:
             const sum = Object.keys(action.ingredients)
@@ -47,7 +50,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 ingredients: action.ingredients,
                 error: false,
-                totalPrice: 5 + sum
+                totalPrice: 5 + sum,
+                building: false
             };
         case actionTypes.FETCH_INGREDIENTS_FAILED:
             return {
