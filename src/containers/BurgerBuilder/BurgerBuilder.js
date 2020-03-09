@@ -12,8 +12,8 @@ import axios from '../../axios-orders';
 
 import * as actionCreators from '../../store/actions/index';
 
-
-class BurderBuilder extends Component {
+//export for testing
+export class BurgerBuilder extends Component {
     state = {
         purchasing: false  // es imena order ro gvinda
     }
@@ -21,7 +21,7 @@ class BurderBuilder extends Component {
     componentDidMount() {
         //console.log(this.props);
         //https://react-burger-3fb36.firebaseio.com/ingredients.json
-        this.props.initIngredients();
+        this.props.onInitIngredients();
 
     }
 
@@ -114,10 +114,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onIngredientAdded: (ingName) => dispatch(actionCreators.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actionCreators.removeIngredient(ingName)), //!!!
-        initIngredients: () => dispatch(actionCreators.initIngredients()),
+        onInitIngredients: () => dispatch(actionCreators.initIngredients()),
         onInitPurchase: () => dispatch(actionCreators.purchaseInit()),
         onSetAuthRedirectPath: (path) => dispatch(actionCreators.setAuthRedirectPath(path))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurderBuilder, axios));
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios));
