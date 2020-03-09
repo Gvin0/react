@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
-
+import { updateObject, checkValidity } from '../../shared/utility';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 import * as actionCreators from '../../store/actions/index';
@@ -53,36 +53,16 @@ class Auth extends Component {
         }
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if (!this.checkValidEmail(value) && rules.forEmailValidation) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
-    checkValidEmail(email) {
-        const re = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
-        return re.test(String(email).toLowerCase());
-    }
-
     inputChangedHandler = (event, control) => {
-        const updatedControl = {
-            ...this.state.controls[control],
-            value: event.target.value,
-            valid: this.checkValidity(event.target.value, this.state.controls[control].validation),
-            touched: true
-        }
-        const updatedControls = {
-            ...this.state.controls,
-            [control]: updatedControl
-        }
+
+        const updatedControls = updateObject(this.state.controls, {
+            [control]: updateObject(this.state.controls[control], {
+                value: event.target.value,
+                valid: checkValidity(event.target.value, this.state.controls[control].validation),
+                touched: true
+            })
+        });
+
         this.setState({
             controls: updatedControls
         });

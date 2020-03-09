@@ -6,6 +6,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErroHandler';
 import * as actionCreators from '../../../store/actions/index';
+import { updateObject, checkValidity } from '../../../shared/utility';
 
 import classes from './ContactData.module.css';
 
@@ -98,25 +99,6 @@ class ContactData extends Component {
         formIsValid: false
     }
 
-    checkValidity(value, rules) {
-        let isValid = true;
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if (!this.checkValidEmail(value) && rules.forEmailValidation) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
-    checkValidEmail(email) {
-        const re = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
-        return re.test(String(email).toLowerCase());
-    }
-
     orderHandler = (event) => {
         event.preventDefault();
         //console.log(this.props.ingredients);
@@ -141,17 +123,15 @@ class ContactData extends Component {
         //console.log(event.target.value)
         //aq es MTLIAN UNIKALUR egzemplars ar qmnis
         //bolomde unda chaxvide!!!
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        const updateFormElement = {
-            ...updatedOrderForm[inputIdentifier]
-        };
-        updateFormElement.value = event.target.value;
-        updateFormElement.valid = this.checkValidity(updateFormElement.value, updateFormElement.validation);
-        updateFormElement.touched = true;
-        updatedOrderForm[inputIdentifier] = updateFormElement;
-        //console.log(updateFormElement);
+        const updateFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: event.target.value,
+            valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {
+            [inputIdentifier] : updateFormElement
+        });
+
         let formIsValid = true;
         for (let inputIdentifier in updatedOrderForm) {
             //qvevit es && formIsValid tsli ragaca ro ar gadaaweros bolo checkma
